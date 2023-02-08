@@ -7,7 +7,7 @@ import com.example.database.util.ConnectionManager;
 
 public abstract class AbstractDAO<ENTITY, KEY> implements DAO<ENTITY, KEY> {
 
-	protected Connection getConnection() { //nprovvisorio
+	protected Connection getConnection() { // provvisorio
 		try {
 			return ConnectionManager.getInstance().createConnection();
 		} catch (SQLException e) {
