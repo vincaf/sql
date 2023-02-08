@@ -201,3 +201,57 @@ Vipiteno/Sterzing                                          |
 Vò                                                         |
  */
 
+-- tramite codice comuni_italiani.istat e comuni.id
+
+-- vogliamo vedere quanti sono i comuni di comuni_italiani che non hanno il codice istat uguale in comuni?
+-- sono 166
+select count(comune)
+from comuni_italiani ci
+where ci.istat not in (select id from comuni)
+;
+
+-- come potremmo procedere?
+-- creare una tabella comuni_temp.
+
+drop table if exists comuni_temp;
+
+create table if not exists comuni_temp as select * from comuni_italiani ci; # create table from select
+
+alter table comuni_temp add column b_id int(11);
+alter table comuni_temp add column b_nome text;
+
+describe comuni_temp;
+
+-- aggiorniamo b_id e b_nome con comuni.id su match comuni.id e comuni_temp.istat
+-- aggiornate 7812 righe
+update comuni_temp ct
+inner join comuni c
+on ct.istat = c.id
+set b_id = c.id, b_nome = c.nome;
+
+-- aggiorniamo b_id e b_nome con comuni.id su match comuni.nome e comuni_temp.comune where b_id is null
+-- aggiornate 156
+update comuni_temp ct
+inner join comuni c
+on ct.comune = c.nome
+set b_id = c.id, b_nome = c.nome
+where b_id is null;
+
+-- quante sono le righe ancora senza b_id;
+select count(*) from comuni_temp where b_id is null;
+
+select * from comuni_temp where b_id is null; -- 10
+
+-- perchè non riuscimo ad abbinarli?
+select * from comuni where nome like "%intelvi%"; -- 6
+
+select * from comuni where nome like "%cutigliano%"; -- 1
+select * from comuni where nome like "%abetone%"; -- 1
+
+select * from comuni where nome like "%mappano%"; -- 0
+
+-- cosa possiamo fare per capire cosa succede?
+-- perchè ce ne sono 10 che non corrispondono
+-- i comuni variano, come posso verificare?
+
+-- quale è il vero problema? LA TABELLA COMUNI E' più vecchia del 2013
