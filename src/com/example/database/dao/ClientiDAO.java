@@ -1,5 +1,6 @@
 package com.example.database.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +27,7 @@ public class ClientiDAO extends AbstractDAO<Cliente, Integer> {
 	private static final String updateQuery = """
 			update clienti set
 			nome = ?,
-			cognome = ?,
+			cognome = ?, getConnection().
 			email = ?,
 			indirizzo = ?,
 			citta = ?,
@@ -80,16 +81,19 @@ public class ClientiDAO extends AbstractDAO<Cliente, Integer> {
 			e.printStackTrace();
 			throw new DAOException("Errore durante la findById()", e);
 		} finally {
-			try { rs.close(); } catch (Exception e) {}
+			try {
+				rs.close();
+			} catch (Exception e) {
+			}
 		}
 
 		return cliente;
 	}
 
 	/**
-	 * La insert crea un nuova tupla nel DB
-	 * ciò implica che l'istanza di Cliente sia incompleta perché idCliente non esiste (null);
-	 * l'idCliente, una volta volta inserita la tupla, mi serve, quindi devo effettuare una retrieve dell'id
+	 * La insert crea un nuova tupla nel DB ciò implica che l'istanza di Cliente sia
+	 * incompleta perché idCliente non esiste (null); l'idCliente, una volta volta
+	 * inserita la tupla, mi serve, quindi devo effettuare una retrieve dell'id
 	 */
 	@Override
 	public Cliente create(Cliente entity) {
@@ -97,14 +101,14 @@ public class ClientiDAO extends AbstractDAO<Cliente, Integer> {
 		try (PreparedStatement pst = getConnection().prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);) {
 			preparazioneStatement(pst, entity);
 			int numeroDegliUpdates = pst.executeUpdate();
-			if(numeroDegliUpdates==0) {
+			if (numeroDegliUpdates == 0) {
 				throw new DAOException("Errore nell'inserimento di " + entity);
 			}
 			ResultSet keys = pst.getGeneratedKeys();
-			if(!keys.next()) {
+			if (!keys.next()) {
 				throw new DAOException("Impossibile recuperare la chiave generata per " + entity);
 			}
-			entity.setIdCliente( keys.getInt(1) ); // imposto la chiave generata
+			entity.setIdCliente(keys.getInt(1)); // imposto la chiave generata
 			log.debug("Cliente dopo inserimento ed assegnazione PK {}", entity);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -127,7 +131,7 @@ public class ClientiDAO extends AbstractDAO<Cliente, Integer> {
 	public Boolean merge(Cliente entity) {
 		log.trace("Inizio aggiornamento del cliente {}", entity);
 
-		if(!existsCliente( entity.getIdCliente() )) {
+		if (!existsCliente(entity.getIdCliente())) {
 			return false;
 		}
 
@@ -142,13 +146,13 @@ public class ClientiDAO extends AbstractDAO<Cliente, Integer> {
 	}
 
 	@Override
-	public Boolean removeById(Integer id) {
+	public Boolean removeById(Connection connection, Integer id) {
 
-		if(!existsCliente( id )) {
+		if (!existsCliente(id)) {
 			return false;
 		}
 
-		try (PreparedStatement pst = getConnection().prepareStatement(removeByIdQuery);) {
+		try (PreparedStatement pst = connection.prepareStatement(removeByIdQuery);) {
 			pst.setInt(1, id);
 			int numeroDegliUpdates = pst.executeUpdate();
 			return numeroDegliUpdates > 0;
@@ -160,23 +164,21 @@ public class ClientiDAO extends AbstractDAO<Cliente, Integer> {
 
 	private boolean existsCliente(Integer id) {
 		Cliente c = findById(id);
-		if(c==null) {
+		if (c == null) {
 			return false;
 		}
 		return true;
 	}
 
 	@Override
-	public Boolean remove(Cliente entity) {
-		return removeById(entity.getIdCliente());
+	public Boolean remove(Connection connection, Cliente entity) {
+		return removeById(connection, entity.getIdCliente());
 	}
 
 	@Override
 	public Long count() {
 		Long count = 0l; // boxing (da tipo primitivo a oggetto wrapper)
-		try (PreparedStatement pst = getConnection().prepareStatement(countQuery);
-				ResultSet rs = pst.executeQuery();
-				) {
+		try (PreparedStatement pst = getConnection().prepareStatement(countQuery); ResultSet rs = pst.executeQuery();) {
 			if (rs.next()) {
 				count = rs.getLong(1);
 			}
