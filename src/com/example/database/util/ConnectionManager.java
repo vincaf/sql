@@ -42,7 +42,7 @@ public final class ConnectionManager {
 	 * @return la java.sql.Connection necessaria
 	 * @throws ConnectionManagerException
 	 */
-	public Connection createConnection() { // provvisorio
+	public Connection createConnection() {
 		log.trace("Rilascio di un'istanza di Connection");
 		Connection connection = null;
 		try {

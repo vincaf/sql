@@ -7,6 +7,7 @@ import com.example.database.util.ConnectionManager;
 
 // implementazione dei loop rende l'idea
 // ma così com'è è assolutamente sbagliata
+// queste attività devono essere effettuate sotto il controllo di una transazione
 public abstract class AbstractDAO<ENTITY, KEY> implements DAO<ENTITY, KEY> {
 
 	protected Connection getConnection() {
