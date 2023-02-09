@@ -41,6 +41,14 @@ class ClientiDAOTest {
 		Cliente cliente = dao.findById( -1 );
 		assertTrue(cliente == null);
 	}
+	
+	@Test
+	void Remove() {
+		ClientiDAO dao = new ClientiDAO();
+		boolean nCancellazioni = dao.removeById(getRandomCliente().getIdCliente());
+		assert (nCancellazioni);
+		System.err.println("eliminato:" + nCancellazioni);
+	}
 
 	private Cliente getRandomCliente() {
 		ClientiDAO dao = new ClientiDAO();

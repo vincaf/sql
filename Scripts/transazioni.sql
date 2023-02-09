@@ -59,6 +59,16 @@ rollback;
 
 select * from province_tmp;
 
+/*
+ * Prove con transazione
+ */
+
+START TRANSACTION;
+SELECT COUNT(*) as 'conteggio start' FROM regioni;
+DELETE FROM regioni WHERE id = 9;
+SELECT count(*) AS 'conteggio dopo delete' FROM regioni;
+ROLLBACK;
+
 
 
 

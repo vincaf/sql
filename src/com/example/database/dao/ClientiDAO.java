@@ -144,7 +144,7 @@ public class ClientiDAO extends AbstractDAO<Cliente, Integer> {
 	@Override
 	public Boolean removeById(Integer id) {
 
-		if(existsCliente( id )) {
+		if(!existsCliente( id )) {
 			return false;
 		}
 
