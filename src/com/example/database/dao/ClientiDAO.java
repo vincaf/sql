@@ -22,6 +22,19 @@ public class ClientiDAO extends AbstractDAO<Cliente, Integer> {
 	private static final String removeByIdQuery = "delete from clienti where ID_CLIENTE = ?";
 	private static final String insertQuery = "insert into clienti (NOME, COGNOME, EMAIL, INDIRIZZO, CITTA, PROVINCIA, CAP) values(?, ?, ?, ?, ?, ?, ?)";
 
+	// java multi-line String disponibile da Java 15
+	private static final String updateQuery = """
+			update clienti set
+			nome = ?,
+			cognome = ?,
+			email = ?,
+			indirizzo = ?,
+			citta = ?,
+			provincia = ?,
+			cap = ?
+			where id_cliente = ?
+			""";
+
 	@Override
 	public List<Cliente> findAll() {
 		List<Cliente> clienti = new ArrayList<>();
@@ -112,12 +125,29 @@ public class ClientiDAO extends AbstractDAO<Cliente, Integer> {
 
 	@Override
 	public Boolean merge(Cliente entity) {
-		// TODO Auto-generated method stub
-		return null;
+		log.trace("Inizio aggiornamento del cliente {}", entity);
+
+		if(!existsCliente( entity.getIdCliente() )) {
+			return false;
+		}
+
+		try (PreparedStatement pst = getConnection().prepareStatement(updateQuery);) {
+			preparazioneStatement(pst, entity);
+			pst.setInt(8, entity.getIdCliente());
+			return pst.executeUpdate() > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DAOException("Errore durante la merge()", e);
+		}
 	}
 
 	@Override
 	public Boolean removeById(Integer id) {
+
+		if(existsCliente( id )) {
+			return false;
+		}
+
 		try (PreparedStatement pst = getConnection().prepareStatement(removeByIdQuery);) {
 			pst.setInt(1, id);
 			int numeroDegliUpdates = pst.executeUpdate();
@@ -126,6 +156,14 @@ public class ClientiDAO extends AbstractDAO<Cliente, Integer> {
 			e.printStackTrace();
 			throw new DAOException("Errore durante la removeById()", e);
 		}
+	}
+
+	private boolean existsCliente(Integer id) {
+		Cliente c = findById(id);
+		if(c==null) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override

@@ -57,6 +57,15 @@ class ClientiDAOTest {
 		System.out.println("Inserito "+cliente);
 	}
 
+	@Test
+	void testUpdate() {
+		ClientiDAO dao = new ClientiDAO();
+		Cliente cliente = dao.findById( getRandomCliente().getIdCliente() );
+		assert(cliente.getIdCliente() != null);
+		cliente.setIndirizzo( cliente.getIndirizzo().toUpperCase() );
+		System.out.println("Aggiornato "+cliente+ " "+dao.merge(cliente));
+	}
+
 	private Cliente generaNuovoCliente() {
 		Cliente cliente = new Cliente();
 		cliente.setNome("nuovo");
