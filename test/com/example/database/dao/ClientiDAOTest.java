@@ -7,7 +7,6 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
-import com.example.database.dao.save.ClientiDAO;
 import com.example.database.entity.Cliente;
 
 class ClientiDAOTest {
@@ -41,6 +40,14 @@ class ClientiDAOTest {
 		ClientiDAO dao = new ClientiDAO();
 		Cliente cliente = dao.findById( -1 );
 		assertTrue(cliente == null);
+	}
+	
+	@Test
+	void Remove() {
+		ClientiDAO dao = new ClientiDAO();
+		boolean nCancellazioni = dao.removeById(getRandomCliente().getIdCliente());
+		assert (nCancellazioni);
+		System.err.println("eliminato:" + nCancellazioni);
 	}
 
 	private Cliente getRandomCliente() {

@@ -7,7 +7,6 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
-import com.example.database.dao.save.ClientiDAO;
 import com.example.database.entity.Cliente;
 
 class ClientiDAOConnectionTest {
