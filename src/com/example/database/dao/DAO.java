@@ -11,6 +11,12 @@ import java.util.List;
 public interface DAO<ENTITY, KEY> {
 
 	/**
+	 * conta il numero delle occorrenze dell'entità
+	 * @return
+	 */
+	Long count();
+
+	/**
 	 * Ricerca e ritorna tutte le occorrenze dell'entità
 	 * @return
 	 */
@@ -29,7 +35,7 @@ public interface DAO<ENTITY, KEY> {
 	 * @return
 	 */
 	ENTITY create(ENTITY entity);
-	
+
 	/**
 	 * Inserisce nel database una nuova entità
 	 * @param entity
@@ -43,6 +49,13 @@ public interface DAO<ENTITY, KEY> {
 	 * @return
 	 */
 	Boolean merge(ENTITY entity);
+
+	/**
+	 * Aggiorna una collection di entità
+	 * @param id
+	 * @return
+	 */
+	Boolean merge(Collection<ENTITY> entities);
 
 	/**
 	 * Elimina l'entità utilizzando la chiave
@@ -65,10 +78,5 @@ public interface DAO<ENTITY, KEY> {
 	 */
 	Boolean remove(Collection<ENTITY> entities);
 
-	/**
-	 * conta il numero delle occorrenze dell'entità
-	 * @return
-	 */
-	Long count();
 
 }
