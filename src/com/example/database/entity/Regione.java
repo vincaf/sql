@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -90,6 +91,38 @@ public class Regione implements Serializable {
 		province.setRegione(null);
 
 		return province;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Regione other = (Regione) obj;
+		return Objects.equals(id, other.id);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Regione [id=");
+		builder.append(id);
+		builder.append(", latitudine=");
+		builder.append(latitudine);
+		builder.append(", longitudine=");
+		builder.append(longitudine);
+		builder.append(", nome=");
+		builder.append(nome);
+		builder.append("]");
+		return builder.toString();
 	}
 
 }

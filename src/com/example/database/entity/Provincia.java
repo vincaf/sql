@@ -3,6 +3,7 @@ package com.example.database.entity;
 import java.io.Serializable;
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 
 /**
@@ -99,5 +100,45 @@ public class Provincia implements Serializable {
 	public void setRegione(Regione regione) {
 		this.regione = regione;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(siglaAutomobilistica);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Provincia other = (Provincia) obj;
+		return Objects.equals(siglaAutomobilistica, other.siglaAutomobilistica);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Provincia [id=");
+		builder.append(id);
+		builder.append(", codiceCittaMetropolitana=");
+		builder.append(codiceCittaMetropolitana);
+		builder.append(", latitudine=");
+		builder.append(latitudine);
+		builder.append(", longitudine=");
+		builder.append(longitudine);
+		builder.append(", nome=");
+		builder.append(nome);
+		builder.append(", siglaAutomobilistica=");
+		builder.append(siglaAutomobilistica);
+		builder.append(", regione=");
+		builder.append(regione);
+		builder.append("]");
+		return builder.toString();
+	}
+	
+	
 
 }
